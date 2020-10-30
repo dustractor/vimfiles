@@ -127,14 +127,14 @@ inoremap <C-]> <esc>
 " or if i am totally lazy which i am
 inoremap <C-> <esc>
 " insert blank likes and stay in normal mode
-nnoremap <C-> o<esc>
-nnoremap <C-S-> O<esc>
+nnoremap <C-> O<esc>
+nnoremap <C-S-> o<esc>
 " trying to encourage this habit
 inoremap <C-s> <C-o>:write<CR>
 nnoremap <C-s> :write<cr>
 " rarely use tabs but this is traverse
-nnoremap <C-h> gT
-nnoremap <C-l> gt
+nnoremap <C-h> :bn<CR>
+nnoremap <C-l> :bN<CR>
 " toggles file sidebar
 nnoremap <F10> :NERDTreeToggle<CR>
 " toggles buffer sidebar
