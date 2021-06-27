@@ -11,21 +11,30 @@ else
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
   endif
 endif
+
 " {{{1 plugs
 call plug#begin()
+Plug 'tomlion/vim-solidity'
+Plug 'vimwiki/vimwiki'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'Vimjas/vim-python-pep8-indent'
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'drmikehenry/vim-fontsize'
+Plug 'kchmck/vim-coffee-script'
 Plug 'dustractor/dazi'
+" Plug 'dustractor/vimtkcolor', {'branch':'py2'}
 Plug 'flazz/vim-colorschemes'
+Plug 'overcache/neosolarized'
+Plug 'relastle/bluewery.vim'
+Plug 'rigellute/rigel'
+Plug 'glepnir/oceanic-material'
 Plug 'gcmt/taboo.vim'
 Plug 'jsit/toast.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'kana/vim-repeat'
 Plug 'leafgarland/typescript-vim'
 Plug 'liuchengxu/space-vim-dark'
+Plug 'djjcast/mirodark'
 Plug 'preservim/tagbar'
-Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 Plug 'scrooloose/nerdtree'
 Plug 'severij/vadelma'
 Plug 'skywind3000/asyncrun.vim'
@@ -36,9 +45,13 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'weynhamz/vim-plugin-minibufexpl'
 Plug '~/havetermsay'
+Plug '~/vimtkcolor'
+Plug '~/verdelma'
+
 call plug#end()
 " }}}1
 " {{{1 set
+" set splitright
 set cursorline
 set autoindent
 set backspace=indent,eol,start
@@ -69,7 +82,7 @@ set wildignore+=__pycache__,\.pyc
 
 " {{{1 let
 if has('win32')
-    let $TMP = expand('$HOMEDRIVE/$HOMEPATH/.vimtemp')
+    let $TMP = expand("$HOMEDRIVE$HOMEPATH")."\\.vimtemp"
 else
     let $TMP = expand("~/.vimtemp")
 endif
@@ -92,33 +105,100 @@ let g:tagbar_autofocus = 1
 let python_highlight_all = 1
 
 " {{{1 fun
-function! NamelessWipeout()
+function! <SID>SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+fun! NamelessWipeout()
     for i in range(bufnr('$'),1,-1)
         if bufname(i) == ""
             exe "bw ".i
         endif
     endfor
-endfunction
+endfun
 
-" function! HaveTermSay(termname,what)
-"     echom a:termname . "<--"
-"     if match(serverlist(),toupper(a:termname)) == -1
-"         call system("start /min gvim.exe --servername " . a:termname)
-"         sleep 777m
-"         call remote_send(a:termname,":term ++curwin<cr>")
-"     endif
-"     call remote_send(a:termname,a:what)
-"     call remote_send(a:termname,"<cr>")
-" endfunction
+"contents of ~/vimfiles/fuck.ahk:
+"DetectHiddenWindows, On
+"WinWait, ahk_exe winpty-agent.exe
+"WinHide, ahk_exe winpty-agent.exe
+";purpose:hide that fucking cmd.exe window!
 
+fun! Blender()
+    let l:b = escape(expand("$BLENDER")," \\")
+    let l:fuck = expand("~\\vimfiles\\fuck.ahk")
+    exe printf("Havetermsay foo \"%s\"&\"%s\"",l:b,l:fuck)
+endfun
+
+fun! PyThis() abort
+    let l:pdir = expand("%:p:h")
+    let l:ppdir = expand("%:p:h:h")
+    let l:run = "python3 %s"
+    if filereadable(l:pdir."\\__init__.py")
+        let l:arg = l:pdir
+        if !filereadable(l:pdir."\\__main__.py")
+            let l:arg = expand("%:p:h:t")
+            let l:run = "cd \"".l:ppdir."\" & python3 -m %s"
+        endif
+    else
+        let l:arg = expand("%:p")
+    endif
+    let l:cmd = printf(l:run,l:arg)
+    exe "Havetermsay desk " . escape(l:cmd," \\")
+endfun
+
+let g:themes_i = 0
+fun! Prevtheme() abort
+    if !exists("g:themes")
+        let g:themes = airline#util#themes('')
+    endif
+    let g:themes_i -= 1
+    let g:airline_theme = g:themes[g:themes_i%len(g:themes)]
+    AirlineRefresh
+    echo g:airline_theme
+endfun
+fun! Nexttheme() abort
+    if !exists("g:themes")
+        let g:themes = airline#util#themes('')
+    endif
+    let g:themes_i += 1
+    let g:airline_theme = g:themes[g:themes_i%len(g:themes)]
+    AirlineRefresh
+    echo g:airline_theme
+endfun
+
+fun! VimWikiSetup() abort
+    nmap <buffer><f12> :VimwikiAll2HTML<CR>
+    
+endfun
+fun! VWTree2(path)
+py << EOF
+import os,vim
+path = vim.eval("a:path")
+out = vim.current.buffer.append
+list(map(out,list(map(lambda _:"- [ ] "+_+" [[file:"+path+_+"|"+_+"]]",os.listdir(path)))))
+EOF
+endfun
 " {{{1 com
+com! NextTheme call Nexttheme()
+com! PrevTheme call Prevtheme()
 com! Google !start https://google.com
-com! Full set lines=99 columns=255
-com! Tall set lines=99 columns=100 foldcolumn=8 nu
-com! UnTall set lines=20 columns=80 foldcolumn=0 nu&
+com! Tall set lines=99 columns=333 foldcolumn=8 nu
+com! Fontwhat set gfn=*
+com! FontXHuge set gfn=Droid_Sans_Mono_Slashed_for_Pow:h36:cANSI:qDRAFT
+com! FontHuge set gfn=Droid_Sans_Mono_Slashed_for_Pow:h28:cANSI:qDRAFT
+com! FontNorm set gfn=Droid_Sans_Mono_Slashed_for_Pow:h20:cANSI:qDRAFT
+com! FontTiny set gfn=Droid_Sans_Mono_Slashed_for_Pow:h16:cANSI:qDRAFT
+com! FontXTiny set gfn=Droid_Sans_Mono_Slashed_for_Pow:h11:cANSI:qDRAFT
+com! UnTall set lines=33 columns=137 foldcolumn=0 nu& | on
 com! WipeoutNameless call NamelessWipeout()
+com! ToggleFullScreen call libcall("c:\\Users\\dustr\\vimfiles\\gvimfullscreen_64.dll","ToggleFullScreen",0)
 " {{{1 map
+" toggle fullscreen
+
 " not have what f1 does
+
 map <esc>OP <F1>
 map <F1> <nop>
 inoremap <F1> <esc>
@@ -132,7 +212,7 @@ nnoremap <C-S-> o<esc>
 " trying to encourage this habit
 inoremap <C-s> <C-o>:write<CR>
 nnoremap <C-s> :write<cr>
-" rarely use tabs but this is traverse
+" buffer traverse
 nnoremap <C-h> :bn<CR>
 nnoremap <C-l> :bN<CR>
 " toggles file sidebar
@@ -142,7 +222,9 @@ nnoremap <F9> :MBEToggle<CR>
 " toggles tag sidebar
 nnoremap <F8> :TagbarToggle<CR>
 " leader stuff
+nnoremap <leader>sp :call <SID>SynStack()<CR>
 nnoremap <leader>/ :set hls!<CR>
+nnoremap <leader>d :e .<cr>
 nnoremap <leader>t :Tall<CR>
 nnoremap <leader>T :UnTall<CR>
 nnoremap <leader>K :WipeoutNameless<CR>
@@ -163,7 +245,12 @@ nnoremap <C-LeftMouse> gf
 " back and forth buttons on the mouse to do the buffer cycle
 nnoremap <X2Mouse> :bn<CR>
 nnoremap <X1Mouse> :bN<CR>
+fun! VisualSelectionToTextFileOnDesktop()
+    let l:f = expand("~/Desktop/obs-title-text.txt")
+    exe ":'<,'>w! ".l:f
+endfun
 
+vnoremap ¸ :call VisualSelectionToTextFileOnDesktop()<CR>
 
 
 " {{{1 abbrev
@@ -179,64 +266,106 @@ aug END
 
 aug VimReload
     au!
-    au BufWritePost  $MYVIMRC  source $MYVIMRC
+    au BufWritePost  $MYVIMRC nested source $MYVIMRC
 aug END
 
-fun Blender()
-    let l:b = escape(expand("$BLENDER")," \\")
-    exe "Havetermsay foo \"".l:b."\""
-endfun
+aug VimWikiCompile
+    au!
+    au BufNew,BufReadPost  *.wiki call VimWikiSetup()
+aug END
 
 aug Bpying
     au!
-    au BufNew,BufReadPost ~/bpy/*.py nmap <buffer><F12> :silent! call Blender()<CR>
+    au BufNew,BufReadPost ~/bpy/*.py nmap <silent><buffer><F12> :silent! call Blender()<CR>
 aug END
 
-fun PyThis()
-    let l:p = escape("python3 " . expand("%:t")," \\")
-    exe "Havetermsay desk " . l:p
-
-endfun
 aug Desktoppin
     au!
     au BufNew,BufReadPost ~/Desktop/*.py nmap <buffer><F12> :call PyThis()<CR>
+aug END
+
+fun! ColorPost(csx) abort
+    if a:csx == "pyte"
+        hi ColorColumn guibg=#ccccee
+    elseif a:csx == "seagull"
+        hi ColorColumn guibg=#ccccee
+    elseif a:csx == "verdelma"
+        let g:airline_theme = "serene"
+    elseif a:csx == "vadelma"
+        hi Cursor gui=NONE guibg='#802060'
+        hi ErrorMsg guibg='#CAACAA'
+        hi Folded gui=bold guibg='#242424' guifg='#555555' term=NONE ctermbg=NONE ctermfg=212
+        hi Function gui=bold
+        hi MatchParen gui=bold guibg=NONE guifg='#00FF00' term=NONE ctermbg=NONE ctermfg=37 " [ ]
+        hi StatusLineTerm guibg='#882269'
+        hi StatusLineTermNC guibg='#504c50'
+        let g:airline_theme = "solarized_flood"
+    elseif a:csx == "neosolarized"
+        hi Function gui=bold
+        hi MatchParen gui=bold guibg=NONE guifg='#00FF00' term=NONE ctermbg=NONE ctermfg=37 " [ ]
+        hi Cursor gui=NONE guibg='#808040'
+        hi FoldColumn guibg=NONE
+        let g:airline_theme = "solarized_flood"
+    elseif a:csx == "neosolarized"
+        hi Cursor guibg='#CC22CC' guifg='#101010'
+        let g:airline_theme = "violet"
+    elseif a:csx == "rigel"
+        hi Function gui=bold
+        hi MatchParen gui=bold guibg=NONE guifg='#00FF00' term=NONE ctermbg=NONE ctermfg=37 " [ ]
+        hi Cursor gui=NONE guibg='#7000A0'
+        hi FoldColumn guibg=NONE
+    elseif a:csx == "oceanic_material"
+        hi Cursor guibg='#CC22CC' guifg='#101010'
+        let g:airline_theme = "violet"
+    endif
+endfun
+
+
+aug Colors
+    au!
+    au ColorScheme * call ColorPost(expand("<amatch>"))
+    au BufWritePost */colors/*.vim nested source <afile>
 aug END
 " }}}1
 
 syntax on
 filetype plugin indent on
 
-set bg=dark
-
+" ~\verdelma\colors\verdelma.vim
+"
 " {{{1 gui
 
 if has('gui_running')
-    if has('win32')
-        set guifont=Source_Code_Pro_for_Powerline:h12:cANSI:qDRAFT
-    else
-        set guifont=Inconsolata \18
-    endif
-
     set guioptions=Ma
-    colo vadelma
-    let g:airline_theme = "seagull"
+    if has('win32')
+        nnoremap <A-F11> :ToggleFullScreen<cr>
+        tnoremap <A-F11> <c-w>:ToggleFullScreen<cr>
+        nnoremap <F3> :PrevTheme<cr>
+        nnoremap <F4> :NextTheme<cr>
+        FontNorm
+        set bg=dark
+        colo vadelma
+        " set bg=light
+        " colo Atelier_SavannaLight
+        " colo papercolor
+        " let g:airline_theme = "papercolor"
 
+    else
+        :
+    endif
+else
+    " }}}1
+    " terminals
+    if has('win32')
+        if expand("$TERM") == "cygwin"
+            colo pencil
+            let g:airline_theme = "dark_minimal"
+            tnoremap <a-e> <c-w>:
+        else
+        endif
+    endif
 endif
-
-" {{{1 hi
-hi ErrorMsg guibg='#CAACAA'
-hi MatchParen gui=NONE guibg=NONE guifg='#40F080' term=NONE ctermbg=NONE ctermfg=37 " [ ]
-hi Cursor gui=NONE guibg='#802060'
-hi StatusLineTerm guibg='#882269'
-hi StatusLineTermNC guibg='#504c50'
-" hi Folded gui=bold guibg='#242424' guifg='#555555' term=NONE ctermbg=NONE ctermfg=212
-"
-" MiniBufExpl Colors
-hi MBENormal               guifg=#808080 guibg=#101010
-
-hi MBEChanged              guifg=#CD5907 guibg=#100000
-hi MBEVisibleNormal        guifg=#5DC2D6 guibg=#101010
-hi MBEVisibleChanged       guifg=#F1266F guibg=#101010
-hi MBEVisibleActiveNormal  guifg=#A6DB29 guibg=#101010
-hi MBEVisibleActiveChanged guifg=#FF00FF guibg=#00FF00
-
+" }}}1
+if v:servername == "FOO"
+    FontHuge
+endif
