@@ -264,6 +264,11 @@ aug KeepCursorPlace
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 aug END
 
+aug SaveWiki
+    au!
+    au FocusLost *.wiki :w
+aug END
+
 aug VimReload
     au!
     au BufWritePost  $MYVIMRC nested source $MYVIMRC
