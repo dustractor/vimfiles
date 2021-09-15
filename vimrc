@@ -20,7 +20,8 @@ Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'drmikehenry/vim-fontsize'
 Plug 'kchmck/vim-coffee-script'
-Plug 'dustractor/dazi'
+" Plug 'dustractor/dazi'
+Plug '~/Documents/dazi'
 " Plug 'dustractor/vimtkcolor', {'branch':'py2'}
 Plug 'flazz/vim-colorschemes'
 Plug 'overcache/neosolarized'
@@ -91,7 +92,7 @@ let g:NERDTreeQuitOnOpen = 1
 let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
 let g:bufferline_show_bufnr = 0
-let g:dazimap = '<F7>'
+" let g:dazimap = '<F7>'
 let g:mapleader = "\<space>"
 let g:miniBufExplAutoStart = 1
 let g:miniBufExplBRSplit = 1
@@ -266,7 +267,7 @@ aug END
 
 aug SaveWiki
     au!
-    au FocusLost *.wiki :w
+    au FocusLost *.wiki :sort | w
 aug END
 
 aug VimReload
