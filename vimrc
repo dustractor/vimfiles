@@ -92,7 +92,7 @@ let g:NERDTreeQuitOnOpen = 1
 let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
 let g:bufferline_show_bufnr = 0
-" let g:dazimap = '<F7>'
+let g:dazimap = '<F7>'
 let g:mapleader = "\<space>"
 let g:miniBufExplAutoStart = 1
 let g:miniBufExplBRSplit = 1
@@ -135,12 +135,12 @@ endfun
 fun! PyThis() abort
     let l:pdir = expand("%:p:h")
     let l:ppdir = expand("%:p:h:h")
-    let l:run = "python3 %s"
+    let l:run = "python %s"
     if filereadable(l:pdir."\\__init__.py")
         let l:arg = l:pdir
         if !filereadable(l:pdir."\\__main__.py")
             let l:arg = expand("%:p:h:t")
-            let l:run = "cd \"".l:ppdir."\" & python3 -m %s"
+            let l:run = "cd \"".l:ppdir."\" & python -m %s"
         endif
     else
         let l:arg = expand("%:p")
@@ -187,11 +187,11 @@ com! PrevTheme call Prevtheme()
 com! Google !start https://google.com
 com! Tall set lines=99 columns=333 foldcolumn=8 nu
 com! Fontwhat set gfn=*
-com! FontXHuge set gfn=Droid_Sans_Mono_Slashed_for_Pow:h36:cANSI:qDRAFT
-com! FontHuge set gfn=Droid_Sans_Mono_Slashed_for_Pow:h28:cANSI:qDRAFT
-com! FontNorm set gfn=Droid_Sans_Mono_Slashed_for_Pow:h20:cANSI:qDRAFT
-com! FontTiny set gfn=Droid_Sans_Mono_Slashed_for_Pow:h16:cANSI:qDRAFT
-com! FontXTiny set gfn=Droid_Sans_Mono_Slashed_for_Pow:h11:cANSI:qDRAFT
+com! FontXHuge set gfn=Inconsolata_for_Powerline:h26
+com! FontHuge set gfn=Inconsolata_for_Powerline:h20
+com! FontNorm set gfn=Inconsolata_for_Powerline:h16
+com! FontTiny set gfn=Inconsolata_for_Powerline:h13
+com! FontXTiny set gfn=Inconsolata_for_Powerline:h11
 com! UnTall set lines=33 columns=137 foldcolumn=0 nu& | on
 com! WipeoutNameless call NamelessWipeout()
 com! ToggleFullScreen call libcall("c:\\Users\\dustr\\vimfiles\\gvimfullscreen_64.dll","ToggleFullScreen",0)
@@ -267,7 +267,7 @@ aug END
 
 aug SaveWiki
     au!
-    au FocusLost *.wiki :sort | w
+    au FocusLost *.wiki :w
 aug END
 
 aug VimReload
@@ -287,7 +287,7 @@ aug END
 
 aug Desktoppin
     au!
-    au BufNew,BufReadPost ~/Desktop/*.py nmap <buffer><F12> :call PyThis()<CR>
+    au BufNew,BufReadPost ~/Desktop/*.py? nmap <buffer><F12> :call PyThis()<CR>
 aug END
 
 fun! ColorPost(csx) abort
@@ -332,6 +332,17 @@ aug Colors
     au ColorScheme * call ColorPost(expand("<amatch>"))
     au BufWritePost */colors/*.vim nested source <afile>
 aug END
+
+fun! DoAutoCommitGithubSite()
+    echom "AUTOCOMMIT"
+    call system(expand("~")."\\Documents\\dustractor.github.io\\autocommit.cmd")
+endfun
+
+aug AutoCommitGithubSite
+    au!
+    au BufWritePost ~/Documents/dustractor.github.io/*.md call DoAutoCommitGithubSite()
+aug END
+
 " }}}1
 
 syntax on
