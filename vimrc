@@ -16,13 +16,9 @@ endif
 " {{{1 Plugins
 
 call plug#begin()
-
-" Plug 'dustractor/dazi'
-" Plug 'dustractor/vimtkcolor', {'branch':'py2'}
-" Plug '~/Documents/dazi'
-" Plug '~/havetermsay'
-" Plug '~/verdelma'
-" Plug '~/vimtkcolor'
+Plug 'preservim/vim-pencil'
+Plug 'preservim/vim-lexical'
+Plug 'tpope/vim-fugitive'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'djjcast/mirodark'
@@ -86,7 +82,9 @@ set wildignore+=__pycache__,\.pyc
 
 " }}}1
 " {{{1 Variables
-
+if has('win32')
+    let g:fugitive_git_executable = '"C:\\Program Files\\Git\\cmd\\git.exe"'
+endif
 let g:NERDTreeQuitOnOpen = 1
 let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
@@ -107,6 +105,16 @@ let python_highlight_all = 1
 
 " }}}1
 " {{{1 Functions
+" {{{2 CommitAndPush
+fun CommitAndPush()
+    let l:temp_cwd = getcwd()
+    exe "cd ". expand("%:p:h")
+    Git add %
+    let l:message = input("message:\n")
+    exe "Git commit -m '". l:message ."'"
+    Git push
+    exe "cd ". l:temp_cwd
+endfun
 
 " {{{2 Termsay
 fun! Termsay(msg)
@@ -275,8 +283,19 @@ aug END
 aug DeskPy
     au!
     au BufNew,BufReadPost ~/Desktop/*.py call DeskPySetup(expand("<afile>"))
-aug end
+aug END
 
+aug EditText
+    au!
+    au FileType markdown,text call pencil#init()
+                \ | call lexical#init()
+aug END
+
+
+aug PyAnyHook
+    au!
+    au BufWritePost ~/Documents/GitHub/randomalt/flask_app.py call CommitAndPush()
+aug END
 " }}}1
 " {{{1 Commands
 com! -nargs=1 Termsay call Termsay(<q-args>)
@@ -339,8 +358,9 @@ cabbrev we wa
 " {{{1 GUI
 
 if has('gui')
+    set renderoptions=type:directx
     set guioptions=Ma
-	set gfn=Inconsolata_for_Powerline:h19
+	set gfn=Fira_Code:h13
     nnoremap <A-F11> :ToggleFullScreen<cr>
     tnoremap <A-F11> <c-w>:ToggleFullScreen<cr>
     nnoremap <F3> :PrevTheme<cr>
@@ -348,5 +368,6 @@ if has('gui')
     " call Day()
     call Nite()
 endif
+
 
 " }}}1
