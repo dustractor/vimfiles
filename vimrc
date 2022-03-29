@@ -1,3 +1,4 @@
+"
 " {{{1 Bootstrap
 if has('win32')
   if empty(glob(expand('$HOMEDRIVE/$HOMEPATH/vimfiles/autoload/plug.vim')))
@@ -13,6 +14,7 @@ else
 endif
 
 " }}}1
+"
 " {{{1 Plugins
 
 call plug#begin()
@@ -51,6 +53,7 @@ Plug 'weynhamz/vim-plugin-minibufexpl'
 call plug#end()
 
 " }}}1
+"
 " {{{1 Options
 
 set autoindent
@@ -81,6 +84,7 @@ set tabstop=4
 set wildignore+=__pycache__,\.pyc
 
 " }}}1
+"
 " {{{1 Variables
 if has('win32')
     let g:fugitive_git_executable = '"C:\\Program Files\\Git\\cmd\\git.exe"'
@@ -104,6 +108,7 @@ let g:themes_i = 0
 let python_highlight_all = 1
 
 " }}}1
+"
 " {{{1 Functions
 " {{{2 CommitAndPush
 fun CommitAndPush()
@@ -256,6 +261,7 @@ fun! Nite()
 endfun
 
 " }}}1
+"
 " {{{1 Autocommands
 
 
@@ -297,6 +303,7 @@ aug PyAnyHook
     au BufWritePost ~/Documents/GitHub/randomalt/flask_app.py call CommitAndPush()
 aug END
 " }}}1
+"
 " {{{1 Commands
 com! -nargs=1 Termsay call Termsay(<q-args>)
 com! NextTheme call Nexttheme()
@@ -314,6 +321,7 @@ com! WipeoutNameless call NamelessWipeout()
 com! ToggleFullScreen call libcall(expand("~/vimfiles/gvimfullscreen_64.dll"),"ToggleFullScreen",0)
 
 " }}}1
+"
 " {{{1 Mappings
 
 map <esc>OP <F1>
@@ -349,12 +357,14 @@ nnoremap <X2Mouse> :bn<CR>
 nnoremap <X1Mouse> :bN<CR>
 
 " }}}1
+"
 " {{{1 Abbreviations
 
 cabbrev qq qa!
 cabbrev we wa
 
 " }}}1
+"
 " {{{1 GUI
 
 if has('gui')
