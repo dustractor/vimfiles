@@ -1,20 +1,18 @@
-"
 " {{{1 Bootstrap
 if has('win32')
-  if empty(glob(expand('$HOMEDRIVE/$HOMEPATH/vimfiles/autoload/plug.vim')))
-    exe 'silent !curl -fLo '.expand('$HOMEDRIVE/$HOMEPATH/vimfiles/autoload/plug.vim').' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-  endif
+    if empty(glob(expand('$HOMEDRIVE/$HOMEPATH/vimfiles/autoload/plug.vim')))
+        exe 'silent !curl -fLo '.expand('$HOMEDRIVE/$HOMEPATH/vimfiles/autoload/plug.vim').' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
 else
-  if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-  endif
+    if empty(glob('~/.vim/autoload/plug.vim'))
+        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
 endif
 
 " }}}1
-"
 " {{{1 Plugins
 
 call plug#begin()
@@ -53,7 +51,6 @@ Plug 'weynhamz/vim-plugin-minibufexpl'
 call plug#end()
 
 " }}}1
-"
 " {{{1 Options
 
 set autoindent
@@ -84,7 +81,6 @@ set tabstop=4
 set wildignore+=__pycache__,\.pyc
 
 " }}}1
-"
 " {{{1 Variables
 if has('win32')
     let g:fugitive_git_executable = '"C:\\Program Files\\Git\\cmd\\git.exe"'
@@ -108,7 +104,6 @@ let g:themes_i = 0
 let python_highlight_all = 1
 
 " }}}1
-"
 " {{{1 Functions
 " {{{2 CommitAndPush
 fun CommitAndPush()
@@ -261,7 +256,6 @@ fun! Nite()
 endfun
 
 " }}}1
-"
 " {{{1 Autocommands
 
 
@@ -303,7 +297,6 @@ aug PyAnyHook
     au BufWritePost ~/Documents/GitHub/randomalt/flask_app.py call CommitAndPush()
 aug END
 " }}}1
-"
 " {{{1 Commands
 com! -nargs=1 Termsay call Termsay(<q-args>)
 com! NextTheme call Nexttheme()
@@ -321,16 +314,12 @@ com! WipeoutNameless call NamelessWipeout()
 com! ToggleFullScreen call libcall(expand("~/vimfiles/gvimfullscreen_64.dll"),"ToggleFullScreen",0)
 
 " }}}1
-"
 " {{{1 Mappings
 
 map <esc>OP <F1>
 map <F1> <nop>
 inoremap <F1> <esc>
 inoremap <C-]> <esc>
-inoremap <C-> <esc>
-nnoremap <C-> O<esc>
-nnoremap <C-S-> o<esc>
 inoremap <C-s> <C-o>:write<CR>
 nnoremap <C-s> :write<cr>
 nnoremap <C-h> :bn<CR>
@@ -357,26 +346,30 @@ nnoremap <X2Mouse> :bn<CR>
 nnoremap <X1Mouse> :bN<CR>
 
 " }}}1
-"
 " {{{1 Abbreviations
 
 cabbrev qq qa!
 cabbrev we wa
 
 " }}}1
-"
 " {{{1 GUI
 
-if has('gui')
-    set renderoptions=type:directx
+if has('gui_running')
     set guioptions=Ma
-	set gfn=Fira_Code:h13
-    nnoremap <A-F11> :ToggleFullScreen<cr>
-    tnoremap <A-F11> <c-w>:ToggleFullScreen<cr>
+    if has('win32')
+        set renderoptions=type:directx
+        set gfn=Fira_Code:h13
+        nnoremap <A-F11> :ToggleFullScreen<cr>
+        tnoremap <A-F11> <c-w>:ToggleFullScreen<cr>
+    endif
     nnoremap <F3> :PrevTheme<cr>
     nnoremap <F4> :NextTheme<cr>
-    " call Day()
     call Nite()
+else
+    let &t_SI = "\e[6 q"
+    let &t_EI = "\e[2 q"
+    colo vadelma
+    let g:airline_theme = "solarized_flood"
 endif
 
 
