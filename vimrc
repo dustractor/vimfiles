@@ -16,6 +16,8 @@ endif
 " {{{1 Plugins
 
 call plug#begin()
+Plug 'dustractor/ritmus'
+Plug 'fladson/vim-kitty'
 Plug 'preservim/vim-pencil'
 Plug 'preservim/vim-lexical'
 Plug 'tpope/vim-fugitive'
@@ -85,6 +87,7 @@ set wildignore+=__pycache__,\.pyc
 if has('win32')
     let g:fugitive_git_executable = '"C:\\Program Files\\Git\\cmd\\git.exe"'
 endif
+let g:proseon = 0
 let g:NERDTreeQuitOnOpen = 1
 let g:airline_powerline_fonts = 1
 let g:bufferline_echo = 0
@@ -116,25 +119,32 @@ fun CommitAndPush()
     exe "cd ". l:temp_cwd
 endfun
 
-" {{{2 Termsay
-fun! Termsay(msg)
-    let l:filename = expand("%:p:t")
-    let l:parentdirname = expand("%:p:h:t")
-    let l:servername = toupper(l:parentdirname . "_" . l:filename)
-    let l:startcmdfmt = "start /B gvim.exe --servername %s"
-    let l:startcmd = printf(l:startcmdfmt,l:servername)
-    if match(serverlist(),l:servername) == -1
-        call system(l:startcmd)
-        sleep 333m
-        call remote_send(l:servername,":term ++curwin ++kill=kill<cr>")
-    endif
-    call remote_send(l:servername,a:msg."<cr>")
-endfun
+" {{{2 Termsay [win32]
+if has('win32')
+    fun! Termsay(msg)
+        let l:filename = expand("%:p:t")
+        let l:parentdirname = expand("%:p:h:t")
+        let l:servername = toupper(l:parentdirname . "_" . l:filename)
+        let l:startcmdfmt = "start /B gvim.exe --servername %s"
+        let l:startcmd = printf(l:startcmdfmt,l:servername)
+        if match(serverlist(),l:servername) == -1
+            call system(l:startcmd)
+            sleep 333m
+            call remote_send(l:servername,":term ++curwin ++kill=kill<cr>")
+        endif
+        call remote_send(l:servername,a:msg."<cr>")
+    endfun
+endif
 
 " {{{2 DeskPySetup
 fun! DeskPySetup(afile)
     let l:prog = expand("~/anaconda3/python.exe")
-    exe printf("nmap <buffer><F12> :Termsay %s %s <cr>",l:prog,a:afile)
+    if has('win32')
+        exe printf("nmap <buffer><F12> :Termsay %s %s <cr>",l:prog,a:afile)
+    else
+        nmap <silent><buffer><F12> :silent! Ritmus<CR>
+
+    endif
 endfun
 
 " {{{2 DoAutoCommitGithubSite
@@ -182,9 +192,32 @@ fun! Nexttheme() abort
     echo g:airline_theme
 endfun
 
+" {{{2 ProseToggle
+fun! ProseToggle()
+    if g:proseon == 0
+    let g:proseon = 1
+    set textwidth=72
+    set wrapmargin=8
+    set spell
+    set cursorcolumn
+    set foldcolumn=8
+
+else
+    let g:proseon = 0
+    set textwidth&
+    set wrapmargin&
+    set spell&
+    set cursorcolumn&
+    set foldcolumn&
+endif
+endfun
+    
+
 " {{{2 VimWikiSetup
 fun! VimWikiSetup() abort
     nmap <buffer><f12> :VimwikiAll2HTML<CR>
+    set textwidth=72
+    set wrapmargin=8
 endfun
 
 " {{{2 VWTree2
@@ -285,11 +318,11 @@ aug DeskPy
     au BufNew,BufReadPost ~/Desktop/*.py call DeskPySetup(expand("<afile>"))
 aug END
 
-aug EditText
-    au!
-    au FileType markdown,text call pencil#init()
-                \ | call lexical#init()
-aug END
+" aug EditText
+"     au!
+"     au FileType markdown,text call pencil#init()
+"                 \ | call lexical#init()
+" aug END
 
 
 aug PyAnyHook
@@ -298,7 +331,12 @@ aug PyAnyHook
 aug END
 " }}}1
 " {{{1 Commands
-com! -nargs=1 Termsay call Termsay(<q-args>)
+
+if has('win32')
+    com! -nargs=1 Termsay call Termsay(<q-args>)
+else
+endif
+
 com! NextTheme call Nexttheme()
 com! PrevTheme call Prevtheme()
 com! Google !start https://google.com
@@ -335,6 +373,7 @@ nnoremap <leader>T :UnTall<CR>
 nnoremap <leader>K :WipeoutNameless<CR>
 nnoremap <leader>; :
 nnoremap <leader>p :s/print(\(.*\))/print("\1:",\1)/<CR>
+nnoremap <leader>P :call ProseToggle()<CR>
 nnoremap <leader>V :e $MYVIMRC<CR>
 cnoremap <C-r><C-l> <C-r>=getline('.')<CR>
 nnoremap <2-LeftMouse> za
@@ -369,7 +408,9 @@ else
     let &t_SI = "\e[6 q"
     let &t_EI = "\e[2 q"
     colo vadelma
-    let g:airline_theme = "solarized_flood"
+    let g:airline_theme = "papercolor"
+    nnoremap <F3> :PrevTheme<cr>
+    nnoremap <F4> :NextTheme<cr>
 endif
 
 
