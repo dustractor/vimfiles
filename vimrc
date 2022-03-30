@@ -16,7 +16,8 @@ endif
 " {{{1 Plugins
 
 call plug#begin()
-Plug 'dustractor/ritmus'
+" Plug 'dustractor/ritmus'
+Plug '~/ritmus'
 Plug 'fladson/vim-kitty'
 Plug 'preservim/vim-pencil'
 Plug 'preservim/vim-lexical'
@@ -138,12 +139,13 @@ endif
 
 " {{{2 DeskPySetup
 fun! DeskPySetup(afile)
-    let l:prog = expand("~/anaconda3/python.exe")
+
     if has('win32')
+        let l:prog = expand("~/anaconda3/python.exe")
         exe printf("nmap <buffer><F12> :Termsay %s %s <cr>",l:prog,a:afile)
     else
         nmap <silent><buffer><F12> :silent! Ritmus<CR>
-
+        " nmap <buffer><F12> :Ritmus<CR>
     endif
 endfun
 
@@ -372,6 +374,7 @@ nnoremap <leader>t :Tall<CR>
 nnoremap <leader>T :UnTall<CR>
 nnoremap <leader>K :WipeoutNameless<CR>
 nnoremap <leader>; :
+nnoremap <leader>C :set colorcolumn inv<CR>
 nnoremap <leader>p :s/print(\(.*\))/print("\1:",\1)/<CR>
 nnoremap <leader>P :call ProseToggle()<CR>
 nnoremap <leader>V :e $MYVIMRC<CR>
@@ -407,8 +410,8 @@ if has('gui_running')
 else
     let &t_SI = "\e[6 q"
     let &t_EI = "\e[2 q"
-    colo vadelma
-    let g:airline_theme = "papercolor"
+    " colo vadelma
+    let g:airline_theme = "transparent"
     nnoremap <F3> :PrevTheme<cr>
     nnoremap <F4> :NextTheme<cr>
 endif
