@@ -53,7 +53,10 @@ Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vimwiki/vimwiki'
-Plug 'weynhamz/vim-plugin-minibufexpl'
+" Plug 'weynhamz/vim-plugin-minibufexpl' old?
+Plug 'fholgado/minibufexpl.vim'
+Plug 'davidhalter/jedi-vim'
+Plug 'ctrlpvim/ctrlp.vim'
 
 call plug#end()
 
@@ -92,6 +95,22 @@ set wildignore+=__pycache__,\.pyc
 if has('win32')
     let g:fugitive_git_executable = '"C:\\Program Files\\Git\\cmd\\git.exe"'
 endif
+let g:jedi#popup_on_dot = 0
+let g:jedi#use_splits_not_buffers = "left"
+let g:jedi#show_call_signatures = "2"
+" let g:jedi#environment_path = "venv"
+" let g:jedi#goto_command = "<leader>d"
+" let g:jedi#goto_assignments_command = "<leader>g"
+" let g:jedi#goto_stubs_command = "<leader>s"
+" let g:jedi#goto_definitions_command = ""
+" let g:jedi#documentation_command = "K"
+" let g:jedi#usages_command = "<leader>n"
+" let g:jedi#completions_command = "<C-Space>"
+" let g:jedi#rename_command = "<leader>r"
+" let g:jedi#auto_initialization = 0
+" let g:jedi#auto_vim_configuration = 0
+" let g:jedi#use_tabs_not_buffers = 1
+
 let g:NERDTreeQuitOnOpen = 1
 let g:airline_powerline_fonts = 1
 let g:argloco_map_all = 1
@@ -99,12 +118,12 @@ let g:bufferline_echo = 0
 let g:bufferline_show_bufnr = 0
 let g:dazimap = '<F7>'
 let g:mapleader = "\<space>"
-let g:miniBufExplAutoStart = 1
+let g:miniBufExplAutoStart = 0
 let g:miniBufExplBRSplit = 1
-let g:miniBufExplBuffersNeeded = 9
+let g:miniBufExplBuffersNeeded = 3 
 let g:miniBufExplShowBufNumbers = 1
 let g:miniBufExplSplitToEdge = 0
-let g:miniBufExplVSplit = 22
+let g:miniBufExplVSplit = 21
 let g:proseon = 0
 let g:seoul256_background=234
 let g:tagbar_autoclose = 1
@@ -141,6 +160,17 @@ if has('win32')
         call remote_send(l:servername,a:msg."<cr>")
     endfun
 endif
+
+" {{{2 BpySetup
+fun! BpySetup(afile)
+    if has('win32')
+        let l:prog = expand("~/anaconda3/python.exe")
+        exe printf("nmap <buffer><F12> :Termsay %s %s <cr>",l:prog,a:afile)
+    else
+        nnoremap <silent><buffer><F12> :silent! Ritmus<CR>
+        nnoremap <silent><buffer><F11> :silent! RitmusCancel<CR>
+    endif
+endfun
 
 " {{{2 DeskPySetup
 fun! DeskPySetup(afile)
@@ -309,10 +339,19 @@ aug VimWikiCompile
     au BufNew,BufReadPost  *.wiki call VimWikiSetup()
 aug END
 
+aug XresourceReload
+    au!
+    au BufWritePost ~/.Xresources call system("xrdb -load ~/.Xresources")
+aug END
 
 aug DeskPy
     au!
     au BufNew,BufReadPost ~/Desktop/*.py call DeskPySetup(expand("<afile>"))
+aug END
+
+aug BpyEdit
+    au!
+    au BufNew,BufReadPost ~/bpy/addons/*.py call BpySetup(expand("<afile>"))
 aug END
 
 " aug EditText
@@ -390,7 +429,7 @@ if has('gui_running')
         nnoremap <A-F11> :ToggleFullScreen<cr>
         tnoremap <A-F11> <c-w>:ToggleFullScreen<cr>
     else
-        set gfn=monofur\ for\ Powerline\ 24
+        set gfn=monofur\ for\ Powerline\ 28
         set bg=dark
         colo vadelma
         let g:airline_theme = "transparent"
@@ -415,19 +454,10 @@ else
         let g:airline_theme = "transparent"
     else
         set bg=dark
-        colo hybrid
-        let g:airline_theme = "luna"
+        colo pencil
+        let g:airline_theme = "transparent"
     endif
 
-    if s:t_term == "st-256color"
-        set bg=dark
-        colo molokai
-        let g:airline_theme = "transparent"
-    elseif s:t_term == "rxvt-unicode-256color"
-        set bg=dark
-        colo seoul256
-        let g:airline_theme = "seoul256"
-    endif
 
 endif
 
