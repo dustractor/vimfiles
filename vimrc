@@ -1,4 +1,5 @@
 " {{{1 Bootstrap
+
 if has('win32')
     if empty(glob(expand('$HOMEDRIVE/$HOMEPATH/vimfiles/autoload/plug.vim')))
         exe 'silent !curl -fLo '.expand('$HOMEDRIVE/$HOMEPATH/vimfiles/autoload/plug.vim').' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
@@ -17,7 +18,6 @@ endif
 
 call plug#begin()
 Plug '~/dazi'
-" Plug '~/kittysay'
 Plug '~/ritmus'
 Plug '~/argloco'
 
@@ -53,7 +53,6 @@ Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vimwiki/vimwiki'
-" Plug 'weynhamz/vim-plugin-minibufexpl' old?
 Plug 'fholgado/minibufexpl.vim'
 Plug 'davidhalter/jedi-vim'
 Plug 'ctrlpvim/ctrlp.vim'
@@ -120,7 +119,7 @@ let g:dazimap = '<F7>'
 let g:mapleader = "\<space>"
 let g:miniBufExplAutoStart = 0
 let g:miniBufExplBRSplit = 1
-let g:miniBufExplBuffersNeeded = 3 
+let g:miniBufExplBuffersNeeded = 3
 let g:miniBufExplShowBufNumbers = 1
 let g:miniBufExplSplitToEdge = 0
 let g:miniBufExplVSplit = 21
@@ -130,10 +129,14 @@ let g:tagbar_autoclose = 1
 let g:tagbar_autofocus = 1
 let g:themes_i = 0
 let python_highlight_all = 1
+let g:ctrlp_cmd = "CtrlPBuffer"
+let g:ctrlp_map = "<F2>"
 
 " }}}1
 " {{{1 Functions
+
 " {{{2 CommitAndPush
+
 fun CommitAndPush()
     let l:temp_cwd = getcwd()
     exe "cd ". expand("%:p:h")
@@ -145,6 +148,7 @@ fun CommitAndPush()
 endfun
 
 " {{{2 Termsay [win32]
+
 if has('win32')
     fun! Termsay(msg)
         let l:filename = expand("%:p:t")
@@ -162,6 +166,7 @@ if has('win32')
 endif
 
 " {{{2 BpySetup
+
 fun! BpySetup(afile)
     if has('win32')
         let l:prog = expand("~/anaconda3/python.exe")
@@ -173,6 +178,7 @@ fun! BpySetup(afile)
 endfun
 
 " {{{2 DeskPySetup
+
 fun! DeskPySetup(afile)
     if has('win32')
         let l:prog = expand("~/anaconda3/python.exe")
@@ -184,12 +190,14 @@ fun! DeskPySetup(afile)
 endfun
 
 " {{{2 DoAutoCommitGithubSite
+
 fun! DoAutoCommitGithubSite()
     echom "AUTOCOMMIT"
     call system(expand("~")."\\Documents\\dustractor.github.io\\autocommit.cmd")
 endfun
 
 " {{{2 SynStack
+
 fun! <SID>SynStack()
   if !exists("*synstack")
     return
@@ -199,6 +207,7 @@ endfun
 
 
 " {{{2 Prevtheme
+
 fun! Prevtheme() abort
     if !exists("g:themes")
         let g:themes = airline#util#themes('')
@@ -210,6 +219,7 @@ fun! Prevtheme() abort
 endfun
 
 " {{{2 Nexttheme
+
 fun! Nexttheme() abort
     if !exists("g:themes")
         let g:themes = airline#util#themes('')
@@ -221,6 +231,7 @@ fun! Nexttheme() abort
 endfun
 
 " {{{2 ProseToggle
+
 fun! ProseToggle()
     if g:proseon == 0
     let g:proseon = 1
@@ -229,7 +240,6 @@ fun! ProseToggle()
     set spell
     set cursorcolumn
     set foldcolumn=8
-
 else
     let g:proseon = 0
     set textwidth&
@@ -241,6 +251,7 @@ endif
 endfun
 
 " {{{2 VimWikiSetup
+
 fun! VimWikiSetup() abort
     nmap <buffer><f12> :VimwikiAll2HTML<CR>
     set textwidth=72
@@ -248,6 +259,7 @@ fun! VimWikiSetup() abort
 endfun
 
 " {{{2 VWTree2
+
 fun! VWTree2(path)
 py << EOF
 import os,vim
@@ -258,6 +270,7 @@ EOF
 endfun
 
 " {{{2 ColorPost
+
 fun! ColorPost(csx) abort
     if a:csx == "pyte"
         hi ColorColumn guibg=#ccccee
@@ -295,23 +308,26 @@ fun! ColorPost(csx) abort
 endfun
 
 " {{{2 DoAutoCommitGithubSite
+
 fun! DoAutoCommitGithubSite()
     echom "AUTOCOMMIT"
     call system(expand("~")."\\Documents\\dustractor.github.io\\autocommit.cmd")
 endfun
 
 " {{{2 Day
+
 fun! Day()
     set bg=light
-    colo Tomorrow
+    colo pencil
     let g:airline_theme = "papercolor"
 endfun
 
 " {{{2 Nite
+
 fun! Nite()
     set bg=dark
-    colo bluewery
-    let g:airline_theme = "bluewery"
+    colo molokai
+    let g:airline_theme = "transparent"
     hi ColorColumn guibg=#234363
 endfun
 
@@ -429,7 +445,7 @@ if has('gui_running')
         nnoremap <A-F11> :ToggleFullScreen<cr>
         tnoremap <A-F11> <c-w>:ToggleFullScreen<cr>
     else
-        set gfn=monofur\ for\ Powerline\ 28
+        set gfn=monofur\ for\ Powerline\ 32
         set bg=dark
         colo vadelma
         let g:airline_theme = "transparent"
@@ -448,14 +464,30 @@ else
     let s:t_theme = expand("$T_THEME")
     let s:t_term = expand("$TERM")
 
+    let g:airline_theme = "transparent"
+    set bg=dark
+
     if s:t_theme == "vadelma"
-        set bg=dark
         colo vadelma
-        let g:airline_theme = "transparent"
-    else
-        set bg=dark
+    elseif s:t_theme == "gruvbox"
+        colo gruvbox
+        let g:airline_theme = "base16_gruvbox_dark_pale"
+    elseif s:t_theme == "solarized"
+        colo solarized8_dark_low
+        let g:airline_theme = "solarized_flood"
+        hi CursorLine term=NONE cterm=bold ctermbg=234
+    elseif s:t_theme == "pencillight"
+        set bg=light
         colo pencil
-        let g:airline_theme = "transparent"
+        let g:airline_theme = "papercolor"
+    elseif s:t_theme == "molokai"
+        colo molokai
+        let g:airline_theme = "minimalist"
+        hi TabLine term=NONE cterm=NONE ctermbg=234 ctermfg=25
+        hi TabLineFill term=NONE cterm=NONE ctermbg=234
+        hi TabLineSel term=italic cterm=italic ctermfg=27
+    else
+        colo pencil
     endif
 
 
