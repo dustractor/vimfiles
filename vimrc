@@ -21,6 +21,7 @@ Plug '~/dazi'
 Plug '~/ritmus'
 Plug '~/argloco'
 
+Plug 'ryanoasis/vim-devicons'
 Plug 'gosukiwi/vim-zen-coding'
 Plug 'fladson/vim-kitty'
 Plug 'preservim/vim-pencil'
@@ -73,6 +74,7 @@ set foldenable
 set foldmethod=marker
 set hidden
 set laststatus=2
+set listchars=eol:¬
 set modeline
 set mouse=nvir
 set mousefocus
@@ -175,6 +177,14 @@ fun! BpySetup(afile)
         nnoremap <silent><buffer><F12> :silent! Ritmus<CR>
         nnoremap <silent><buffer><F11> :silent! RitmusCancel<CR>
     endif
+endfun
+
+" {{{2 DeskCSetup
+
+fun! DeskCSetup(afile)
+    set colorcolumn=120
+    nnoremap <silent><buffer><F12> :silent! Ritmus<CR>
+    nnoremap <silent><buffer><F11> :silent! RitmusCancel<CR>
 endfun
 
 " {{{2 DeskPySetup
@@ -360,6 +370,10 @@ aug XresourceReload
     au BufWritePost ~/.Xresources call system("xrdb -load ~/.Xresources")
 aug END
 
+aug DeskC
+    au!
+    au BufNew,BufReadPost ~/Desktop/*.c call DeskCSetup(expand("<afile>"))
+aug END
 aug DeskPy
     au!
     au BufNew,BufReadPost ~/Desktop/*.py call DeskPySetup(expand("<afile>"))
@@ -368,6 +382,11 @@ aug END
 aug BpyEdit
     au!
     au BufNew,BufReadPost ~/bpy/addons/*.py call BpySetup(expand("<afile>"))
+aug END
+
+aug EditObconf
+    au!
+    au BufWritePost ~/.config/openbox/*.xml call system("openbox --reconfigure")
 aug END
 
 " aug EditText
@@ -387,9 +406,9 @@ aug END
 
 com! NextTheme call Nexttheme()
 com! PrevTheme call Prevtheme()
-com! Tall set lines=62 columns=239 foldcolumn=8 nu
+com! Tall set lines=65 columns=160 foldcolumn=8 nu
 com! Fontwhat set gfn=*
-com! UnTall set lines=30 columns=119 foldcolumn=0 nu&
+com! UnTall set lines=20 columns=80 foldcolumn=0 nu&
 if has('win32')
     com! -nargs=1 Termsay call Termsay(<q-args>)
     com! Google !start https://google.com
@@ -445,7 +464,7 @@ if has('gui_running')
         nnoremap <A-F11> :ToggleFullScreen<cr>
         tnoremap <A-F11> <c-w>:ToggleFullScreen<cr>
     else
-        set gfn=monofur\ for\ Powerline\ 32
+        set gfn=monofur\ for\ Powerline\ 24
         set bg=dark
         colo vadelma
         let g:airline_theme = "transparent"
@@ -469,6 +488,11 @@ else
 
     if s:t_theme == "vadelma"
         colo vadelma
+    elseif s:t_theme == "arcadia"
+        colo arcadia
+    elseif s:t_theme == "zenburn"
+        colo zenburn
+        let g:airline_theme = "zenburn"
     elseif s:t_theme == "gruvbox"
         colo gruvbox
         let g:airline_theme = "base16_gruvbox_dark_pale"
@@ -489,8 +513,9 @@ else
     else
         colo pencil
     endif
-
-
 endif
+" ()
+hi MatchParen gui=bold guibg=NONE term=NONE cterm=NONE ctermbg=NONE guifg=#FF00FF ctermfg=7
+hi Cursor gui=NONE guibg=#238412 guifg=#003400
 
 " }}}1
