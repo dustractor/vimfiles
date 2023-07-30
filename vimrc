@@ -397,7 +397,7 @@ if has('gui_running')
         set renderoptions=type:directx
         " set gfn=Fira_Code:h13
         " set gfn=Inconsolata_for_Powerline:h20:W500:cANSI:qDRAFT
-        set gfn=monofur_for_Powerline:h24:cANSI:qDRAFT
+        set gfn=monofur_for_Powerline:h20:cANSI:qDRAFT
         nnoremap <A-F11> :ToggleFullScreen<cr>
         tnoremap <A-F11> <c-w>:ToggleFullScreen<cr>
     endif
