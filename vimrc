@@ -17,9 +17,9 @@ endif
 
 call plug#begin()
 " Plug 'dustractor/ritmus'
-Plug '~/ritmus'
+" Plug '~/ritmus'
 Plug 'dustractor/dazi', {'branch':'win32'}
-Plug 'fladson/vim-kitty'
+" Plug 'fladson/vim-kitty'
 Plug 'preservim/vim-pencil'
 Plug 'preservim/vim-lexical'
 Plug 'tpope/vim-fugitive'
