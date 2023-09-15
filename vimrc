@@ -140,7 +140,6 @@ endif
 
 " {{{2 DeskPySetup
 fun! DeskPySetup(afile)
-
     if has('win32')
         let l:prog = expand("~/anaconda3/python.exe")
         exe printf("nmap <buffer><F12> :Termsay %s %s <cr>",l:prog,a:afile)
@@ -148,12 +147,6 @@ fun! DeskPySetup(afile)
         nmap <silent><buffer><F12> :silent! Ritmus<CR>
         " nmap <buffer><F12> :Ritmus<CR>
     endif
-endfun
-
-" {{{2 DoAutoCommitGithubSite
-fun! DoAutoCommitGithubSite()
-    echom "AUTOCOMMIT"
-    call system(expand("~")."\\Documents\\dustractor.github.io\\autocommit.cmd")
 endfun
 
 " {{{2 SynStack
@@ -270,12 +263,6 @@ fun! ColorPost(csx) abort
     endif
 endfun
 
-" {{{2 DoAutoCommitGithubSite
-fun! DoAutoCommitGithubSite()
-    echom "AUTOCOMMIT"
-    call system(expand("~")."\\Documents\\dustractor.github.io\\autocommit.cmd")
-endfun
-
 " {{{2 Day
 fun! Day()
     set bg=light
@@ -321,17 +308,16 @@ aug DeskPy
     au BufNew,BufReadPost ~/Desktop/*.py call DeskPySetup(expand("<afile>"))
 aug END
 
-" aug EditText
-"     au!
-"     au FileType markdown,text call pencil#init()
-"                 \ | call lexical#init()
-" aug END
-
+aug DocsGHPy
+    au!
+    au BufNew,BufReadPost ~/Documents/GitHub/*.py call DeskPySetup(expand("<afile>"))
+aug END
 
 aug PyAnyHook
     au!
     au BufWritePost ~/Documents/GitHub/randomalt/flask_app.py call CommitAndPush()
 aug END
+
 " }}}1
 " {{{1 Commands
 
@@ -397,7 +383,7 @@ if has('gui_running')
         set renderoptions=type:directx
         " set gfn=Fira_Code:h13
         " set gfn=Inconsolata_for_Powerline:h20:W500:cANSI:qDRAFT
-        set gfn=monofur_for_Powerline:h20:cANSI:qDRAFT
+        set gfn=monofur_for_Powerline:h16:cANSI:qCLEARTYPE
         nnoremap <A-F11> :ToggleFullScreen<cr>
         tnoremap <A-F11> <c-w>:ToggleFullScreen<cr>
     endif
