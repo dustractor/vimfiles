@@ -90,3 +90,7 @@ The secondary vim instance needs a server name so that we can direct messages to
 
 
 ``expand("%:p:h:t")`` gives that value.  The ``:h`` modifier give the head of the path -- everything that's not the tail, that is.  So the tail of the head of the path of the buffer is the name of the directory.
+
+They say a picture is word a thousand words. I don't know how many words an animation is worth but here is this setup in action:
+
+![alt text](untitled.webm)
