@@ -93,4 +93,10 @@ The secondary vim instance needs a server name so that we can direct messages to
 
 They say a picture is word a thousand words. I don't know how many words an animation is worth but here is this setup in action:
 
-![alt text](untitled.webm)
+<p><video controls preload="metadata">
+<source type="video/webm" src="untitled.webm"></source>
+Your browser does not support playing HTML5 video. You can
+<a href="untitled.webm" download>download a copy of the video
+file</a> instead.
+Here is a description of the content: test link
+</video></p>
