@@ -149,6 +149,12 @@ fun! DeskPySetup(afile)
     endif
 endfun
 
+" {{{2 BpyPySetup
+fun! BpyPySetup(afile)
+    let l:prog = "C:\\Program\ Files\\Blender\ Foundation\\Blender\ 3.6\\blender.exe"
+    exe printf("nmap <silent><buffer><F12> :silent! Termsay \"%s\"<cr>",l:prog)
+endfun
+
 " {{{2 SynStack
 fun! <SID>SynStack()
   if !exists("*synstack")
@@ -313,6 +319,11 @@ aug DocsGHPy
     au BufNew,BufReadPost ~/Documents/GitHub/*.py call DeskPySetup(expand("<afile>"))
 aug END
 
+aug BPYEdit
+    au!
+    au BufNew,BufReadPost ~/bpy/addons/*.py call BpyPySetup(expand("<afile>"))
+aug END
+
 aug PyAnyHook
     au!
     au BufWritePost ~/Documents/GitHub/randomalt/flask_app.py call CommitAndPush()
@@ -390,6 +401,14 @@ if has('gui_running')
     nnoremap <F3> :PrevTheme<cr>
     nnoremap <F4> :NextTheme<cr>
     call Nite()
+    let g:terminal_ansi_colors = [
+      \'#282828', '#CC241D', '#98971A', '#D79921',
+      \'#458588', '#B16286', '#689D6A', '#D65D0E',
+      \'#fb4934', '#b8bb26', '#fabd2f', '#83a598',
+      \'#d3869b', '#8ec07c', '#fe8019', '#FBF1C7' ]
+
+    highlight Terminal guibg='#282828'
+    highlight Terminal guifg='#ebdbb2'
 else
     let &t_SI = "\e[6 q"
     let &t_EI = "\e[2 q"
