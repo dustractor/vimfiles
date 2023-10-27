@@ -133,6 +133,7 @@ if has('win32')
             call system(l:startcmd)
             sleep 333m
             call remote_send(l:servername,":term ++curwin ++kill=kill<cr>")
+            call remote_send(l:servername,"conda activate<cr>")
         endif
         call remote_send(l:servername,a:msg."<cr>")
     endfun
