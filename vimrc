@@ -132,6 +132,7 @@ if has('win32')
         if match(serverlist(),l:servername) == -1
             call system(l:startcmd)
             sleep 333m
+            call remote_send(l:servername,":set gfn=monofur_for_Powerline:h10:cANSI:qCLEARTYPE<cr>")
             call remote_send(l:servername,":term ++curwin ++kill=kill<cr>")
             call remote_send(l:servername,"conda activate<cr>")
         endif
@@ -152,7 +153,7 @@ endfun
 
 " {{{2 BpyPySetup
 fun! BpyPySetup(afile)
-    let l:prog = "C:\\Program\ Files\\Blender\ Foundation\\Blender\ 3.6\\blender.exe"
+    let l:prog = "C:\\Program\ Files\\Blender\ Foundation\\Blender\ 4.0\\blender.exe"
     exe printf("nmap <silent><buffer><F12> :silent! Termsay \"%s\"<cr>",l:prog)
 endfun
 
@@ -393,8 +394,6 @@ if has('gui_running')
     set guioptions=Ma
     if has('win32')
         set renderoptions=type:directx
-        " set gfn=Fira_Code:h13
-        " set gfn=Inconsolata_for_Powerline:h20:W500:cANSI:qDRAFT
         set gfn=monofur_for_Powerline:h16:cANSI:qCLEARTYPE
         nnoremap <A-F11> :ToggleFullScreen<cr>
         tnoremap <A-F11> <c-w>:ToggleFullScreen<cr>
@@ -411,12 +410,18 @@ if has('gui_running')
     highlight Terminal guibg='#282828'
     highlight Terminal guifg='#ebdbb2'
 else
+    if has('win32')
+        colo vadelma
+        let g:airline_theme = "murmur"
+        let g:airline_powerline_fonts = 0
+    else
+        colo vadelma
+        let g:airline_theme = "transparent"
+    endif
     let &t_SI = "\e[6 q"
     let &t_EI = "\e[2 q"
-    " colo vadelma
-    let g:airline_theme = "transparent"
-    nnoremap <F3> :PrevTheme<cr>
-    nnoremap <F4> :NextTheme<cr>
+    " nnoremap <F3> :PrevTheme<cr>
+    " nnoremap <F4> :NextTheme<cr>
 endif
 
 
